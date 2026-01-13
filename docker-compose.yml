@@ -50,3 +50,28 @@ services:
       - LOGSTASH_URL=http://logstash:8080
     ports:
       - "8000:8000"
+
+  metricbeat:
+    image: docker.elastic.co/beats/metricbeat:8.15.0
+    container_name: metricbeat
+    user: root
+    command: [ "metricbeat", "-e", "--strict.perms=false" ]
+    volumes:
+      - ./metricbeat.yml:/usr/share/metricbeat/metricbeat.yml:ro
+    depends_on:
+      - logstash
+      - elasticsearch
+
+  grafana:
+    image: grafana/grafana:10.0.3
+    container_name: grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    ports:
+      - "3000:3000"
+    depends_on:
+      - elasticsearch
