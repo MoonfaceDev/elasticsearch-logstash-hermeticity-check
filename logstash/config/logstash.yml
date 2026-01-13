@@ -5,3 +5,7 @@ queue.type: persisted
 queue.max_bytes: 1mb
 queue.page_capacity: 64kb
 queue.checkpoint.writes: 1
+
+dead_letter_queue.enable: true
+dead_letter_queue.max_bytes: 10mb
+log.level: info
