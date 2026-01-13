@@ -1,0 +1,15 @@
+[project]
+name = "hermeticity-check-app"
+version = "0.1.0"
+description = "App to test Logstash backpressure"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "httpx",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
