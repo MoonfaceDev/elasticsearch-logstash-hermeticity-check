@@ -51,16 +51,25 @@ services:
     ports:
       - "8000:8000"
 
-  metricbeat:
-    image: docker.elastic.co/beats/metricbeat:8.15.0
-    container_name: metricbeat
-    user: root
-    command: [ "metricbeat", "-e", "--strict.perms=false" ]
-    volumes:
-      - ./metricbeat.yml:/usr/share/metricbeat/metricbeat.yml:ro
+  logstash_exporter:
+    image: kuskoman/logstash-exporter:v1.9.0
+    container_name: logstash_exporter
+    environment:
+      - LOGSTASH_URL=http://logstash:9600
+    ports:
+      - "9198:9198"
     depends_on:
       - logstash
-      - elasticsearch
+
+  prometheus:
+    image: prom/prometheus:v2.45.0
+    container_name: prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    depends_on:
+      - logstash_exporter
 
   grafana:
     image: grafana/grafana:10.0.3
@@ -74,4 +83,4 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - elasticsearch
+      - prometheus
